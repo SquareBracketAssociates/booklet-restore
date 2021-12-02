@@ -1,0 +1,179 @@
+% -*- mode: latex; -*- mustache tags:  
+\documentclass[10pt,twoside,english]{_support/latex/sbabook/sbabook}
+\let\wholebook=\relax
+
+\usepackage{import}
+\subimport{_support/latex/}{common.tex}
+
+%=================================================================
+% Debug packages for page layout and overfull lines
+% Remove the showtrims document option before printing
+\ifshowtrims
+  \usepackage{showframe}
+  \usepackage[color=magenta,width=5mm]{_support/latex/overcolored}
+\fi
+
+
+% =================================================================
+\title{Restore}
+\author{John Aspinall}
+\series{Square Bracket tutorials}
+
+\hypersetup{
+  pdftitle = {Restore},
+  pdfauthor = {John Aspinall},
+  pdfkeywords = {project template, Pillar, Pharo, Smalltalk}
+}
+
+
+% =================================================================
+\begin{document}
+
+% Title page and colophon on verso
+\maketitle
+\pagestyle{titlingpage}
+\thispagestyle{titlingpage} % \pagestyle does not work on the first one…
+
+\cleartoverso
+{\small
+
+  Copyright 2017 by John Aspinall.
+
+  The contents of this book are protected under the Creative Commons
+  Attribution-ShareAlike 3.0 Unported license.
+
+  You are \textbf{free}:
+  \begin{itemize}
+  \item to \textbf{Share}: to copy, distribute and transmit the work,
+  \item to \textbf{Remix}: to adapt the work,
+  \end{itemize}
+
+  Under the following conditions:
+  \begin{description}
+  \item[Attribution.] You must attribute the work in the manner specified by the
+    author or licensor (but not in any way that suggests that they endorse you
+    or your use of the work).
+  \item[Share Alike.] If you alter, transform, or build upon this work, you may
+    distribute the resulting work only under the same, similar or a compatible
+    license.
+  \end{description}
+
+  For any reuse or distribution, you must make clear to others the
+  license terms of this work. The best way to do this is with a link to
+  this web page: \\
+  \url{http://creativecommons.org/licenses/by-sa/3.0/}
+
+  Any of the above conditions can be waived if you get permission from
+  the copyright holder. Nothing in this license impairs or restricts the
+  author's moral rights.
+
+  \begin{center}
+    \includegraphics[width=0.2\textwidth]{_support/latex/sbabook/CreativeCommons-BY-SA.pdf}
+  \end{center}
+
+  Your fair dealing and other rights are in no way affected by the
+  above. This is a human-readable summary of the Legal Code (the full
+  license): \\
+  \url{http://creativecommons.org/licenses/by-sa/3.0/legalcode}
+
+  \vfill
+
+  % Publication info would go here (publisher, ISBN, cover design…)
+  Layout and typography based on the \textcode{sbabook} \LaTeX{} class by Damien
+  Pollet.
+}
+
+
+\frontmatter
+\pagestyle{plain}
+
+\tableofcontents*
+\clearpage\listoffigures
+
+\mainmatter
+
+\chapter{Introduction }
+ReStore is a framework for Dolphin Smalltalk and Pharo which enables objects to be stored in and read from relational databases (SQLite, PostgreSQL, MySQL etc.). 
+
+ReStore aims to make relational persistency as simple as possible, creating and maintaining the database structure itself and providing access to stored objects via familiar Smalltalk messages. This allows you to take advantage of the power and flexibility of relational storage with no specialist knowledge beyond the ability to install and configure your chosen database.
+\chapter{Getting Started}
+To install ReStore in your image follow the instructions on the GitHub project page for your Smalltalk dialect:
+
+\begin{itemize}
+\item Dolphin Smalltalk - \url{https://github.com/rko281/ReStore}
+\item Pharo - \url{https://github.com/rko281/ReStoreForPharo}
+\end{itemize}
+
+The class \textcode{SSWReStore} represents a ReStore session/connection; following installation a default singleton instance of \textcode{SSWReStore} is created and assigned to the global variable \textcode{ReStore}. We will use this global default throughout most of this document (see chapter 8 for information on working with multiple ReStore instances). 
+\section{Choosing a Database}
+ReStore supports several different databases via the SSWSQLDialect class hierarchy. Currently defined SQL Dialects are:
+
+\begin{itemize}
+\item SQLite
+\item MySQL / MariaDB
+\item PostgreSQL
+\item SQL Server
+\item Access
+\end{itemize}
+
+Each subclass defines the different behavior, data types, functions etc. supported by a particular database. ReStore automatically selects the appropriate subclass after connecting to your chosen database; this ensures your application code is independent of database choice, enabling you to switch databases easily if required. For example, for simplicity and speed you may use SQLite during development, then deploy to PostgreSQL for better scalability.
+
+ 
+\section{Configuring ReStore}
+After choosing and installing your database you must tell ReStore how to connect to it; the method for doing this varies by Smalltalk dialect:
+\subsection{Dolphin Smalltalk}
+ReStore for Dolphin accesses databases via ODBC. You must first create a Data Source Name (DSN) using the driver for your chosen database via the ODBC control panel. Since Dolphin is a 32-bit application ensure that you use the 32-bit ODBC control panel – you can open this from your Dolphin image by evaluating 
+
+\begin{displaycode}{plain}
+ReStore openODBC
+\end{displaycode}
+
+Once the DSN is created you can configure ReStore to use it as follows:
+
+\begin{displaycode}{plain}
+ReStore dsn: ‘MyDataSourceName’
+\end{displaycode}
+\subsection{Pharo}
+Pharo currently supports SQLite, MySQL and PostgreSQL. You must create the appropriate connection object then assign this to ReStore as follows:
+
+\begin{displaycode}{plain}
+"SQLite – see https://github.com/pharo-rdbms/Pharo-SQLite3 for more information"
+ReStore connection: (SSWSQLite3Connection on: (Smalltalk imageDirectory / 'test.db') fullName)
+\end{displaycode}
+
+\begin{displaycode}{plain}
+"PostgreSQL – see https://github.com/svenvc/P3 for more information"
+ReStore connection: (SSWP3Connection new url: 'psql://user:pwd@192.168.1.234:5432/database')
+\end{displaycode}
+
+\begin{displaycode}{plain}
+"MySQL – see https://github.com/pharo-rdbms/Pharo-MySQL for more information"
+ReStore connection: 
+(SSWMySQLConnection new 
+	connectionSpec: 
+		(MySQLDriverSpec new 
+			db: 'database'; host: '192.168.1.234'; port: 3306; 
+			user: 'user'; password: 'pwd'; 
+		yourself); 
+yourself)
+\end{displaycode}
+\section{Connecting and Disconnecting}
+Once you have configured ReStore for your chosen database you may connect to and disconnect from the database as follows:
+
+\begin{displaycode}{plain}
+ReStore connect.
+ReStore disconnect.
+\end{displaycode}
+
+
+
+\bibliographystyle{alpha}
+\bibliography{book.bib}
+
+% lulu requires an empty page at the end. That's why I'm using
+% \backmatter here.
+\backmatter
+
+% Index would go here
+
+\end{document}
