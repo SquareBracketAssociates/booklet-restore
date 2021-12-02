@@ -7,6 +7,9 @@ ReStore aims to make relational persistency as simple as possible, creating and 
 
 ${inputFile:path=Chapters/1-Started/GettingStarted.pillar}$
 
-
+${inputFile:path=Chapters/2-ObjectModel/ObjectModel.pillar}$
+${inputFile:path=Chapters/3-StoringObjects/StoringObjects.pillar}$
+${inputFile:path=Chapters/3-StoringObjects/Manually.pillar}$
+${inputFile:path=Chapters/5-QueryOne/QueryIntro.pillar}$
 
 
