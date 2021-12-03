@@ -18,10 +18,25 @@
 \contentsline {subsection}{ByteArray}{9}{section*.5}
 \contentsline {subsection}{ScaledDecimal}{9}{section*.6}
 \contentsline {section}{\numberline {3.3}Unique IDs}{9}{section.3.3}
+\contentsline {section}{\numberline {3.4}Collections}{10}{section.3.4}
+\contentsline {section}{\numberline {3.5}Owned Collections}{11}{section.3.5}
+\contentsline {section}{\numberline {3.6}Dictionaries}{11}{section.3.6}
+\contentsline {subsection}{Cache Dictionaries}{12}{section*.7}
+\contentsline {subsection}{Multi-Value Cache Dictionaries}{13}{section*.8}
+\contentsline {subsection}{Derived Keys}{13}{section*.9}
+\contentsline {section}{\numberline {3.7}Dependent Relationships}{14}{section.3.7}
+\contentsline {section}{\numberline {3.8}Inlined Classes}{15}{section.3.8}
+\contentsline {section}{\numberline {3.9}Inheritance }{15}{section.3.9}
+\contentsline {subsection}{Disadvantages of Sharing a Table }{16}{section*.10}
+\contentsline {section}{\numberline {3.10}Creating and Maintaining the Database}{17}{section.3.10}
+\contentsline {subsection}{Maintaining Tables}{18}{section*.11}
+\contentsline {subsection}{Renaming a Class}{18}{section*.12}
+\contentsline {subsection}{Removing Classes}{18}{section*.13}
+\contentsline {subsection}{Renaming an Instance Variable}{19}{section*.14}
 \needspace {3\baselineskip }
-\contentsline {chapter}{\chapternumberline {4}Storing Objects – Transactions}{11}{chapter.4}
+\contentsline {chapter}{\chapternumberline {4}Storing Objects – Transactions}{21}{chapter.4}
 \needspace {3\baselineskip }
-\contentsline {chapter}{\chapternumberline {5}Storing Objects Manually}{13}{chapter.5}
+\contentsline {chapter}{\chapternumberline {5}Storing Objects Manually}{23}{chapter.5}
 \needspace {3\baselineskip }
-\contentsline {chapter}{\chapternumberline {6}Query Introduction}{15}{chapter.6}
-\contentsline {chapter}{Bibliography}{17}{chapter*.7}
+\contentsline {chapter}{\chapternumberline {6}Query Introduction}{25}{chapter.6}
+\contentsline {chapter}{Bibliography}{27}{chapter*.15}

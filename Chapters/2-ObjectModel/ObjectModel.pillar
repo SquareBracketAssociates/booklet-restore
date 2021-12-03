@@ -188,15 +188,14 @@ Like other collections, the class of elements for both key and value can be any 
 !!!! Cache Dictionaries
 For reasons of logic or efficiency you may have a Dictionary where the key is some attribute of the value. For example, say you have a Company object - this has a potentially large collection of addresses of individual offices:
 
-[[[
-Company	Offices
-Widgets International, Inc.	Schupstraat 24, Antwerp
-...
-The Widgets Centre, Zagreb
-Transdiffussion Worldwide	Westerstraat 93, Amsterdam
-...
-Transdifussion House, Zurich
-]]]
+
+| ""Company"" | ""Offices"" |
+|Widgets International, Inc. | Schupstraat 24, Antwerp|
+| | ...|
+| | The Widgets Centre, Zagreb|
+|Transdiffussion Worldwide| Westerstraat 93, Amsterdam|
+| |...|
+| |Transdifussion House, Zurich|
 
 
 Your application has a requirement to quickly find the Office in a particular city - hence you would like to store the collection of CompanyOffices as a Dictionary mapping city name to actual CompanyOffice. Since this arrangement is effectively a lookup cache, ReStore terms such structures Cache Dictionaries.
@@ -378,7 +377,7 @@ Individual subclasses may also choose to 'opt out' of sharing a table by impleme
 [[[
 shouldInheritPersistency 
 
-	^false
+	^ false
 ]]]
 
 Note, however, that a subclass cannot 'opt in' to table sharing where it has been specifically turned off by a superclass implementation of shouldSubclassesInheritPersistency.
