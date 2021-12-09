@@ -96,3 +96,22 @@ johnSmith surname: 'Smythe'.
 In a similar way it is also possible to easily implement a dialog with OK/Cancel functionality without any additional code – simply begin a transaction when opening the dialog, then either commit or rollback depending on whether the user clicks OK or Cancel.
 
  
+!!! Deleting Persistent Objects
+Finally, you may also wish to delete persistent objects from the database. This is done with the message unstore:
+
+[[[
+"Delete an object from the database"
+ReStore evaluateAsTransaction: [johnSmith unstore]. 
+]]]
+
+!!!! Automatic Deletion of Dependent Objects
+Similar to the automatic storing of referenced objects discussed earlier, referenced objects may also automatically be unstored when their referring object is unstored. However this is subject to whether the ==reStoreDefinition== of the referring object defines the relationship as dependent (see section 2.7).
+
+Assuming the address and orders definitions of ==Customer== are dependent:
+[[[
+define: #address as: Address dependent;
+define: #orders as: (OrderedCollection of: CustomerOrder owner: #customer);
+]]]
+
+… then the Address object and all ==CustomerOrder== objects referred to by johnSmith will also be deleted when johnSmith is deleted.
+ 
