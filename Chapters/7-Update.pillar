@@ -93,11 +93,30 @@ If this automatic merging is not acceptable for a particular object (or particul
 !!! Handling Clashes Automatically
 If there is a 'full' update clash (i.e. the changes 1>>2 and 1>>3 affect one or more of the same instance variables) ReStore will ask the changed object itself to try to resolve the change. ReStore does this by sending the message handleUpdateClash:from:to: to the affected object(s) for each clashing instance variable − the arguments to the message being the changed instance variable (a Symbol), the previous version of the object (version 1) and the current database version of the object (version 3).
 
-By implementing handleUpdateClash:from:to: in your model classes you can update the receiver (i.e. version 2, the in−memory version of the object) to resolve the clash. The result of this method should be a Boolean indicating whether the clash was resolved. If all update−clashing objects in a transaction are able to resolve their own clashes, then the transaction will automatically re-commit successfully with no further intervention.
+By implementing ==handleUpdateClash:from:to:== in your model classes you can update the receiver (i.e. version 2, the in-memory version of the object) to resolve the clash. The result of this method should be a Boolean indicating whether the clash was resolved. If all update-clashing objects in a transaction are able to resolve their own clashes, then the transaction will automatically re-commit successfully with no further intervention.
 
-As an example we’ll return to the previous CustomerOrder example, in particular the Product class. The most volatile attribute of a Product is likely to be its stockLevel since this will change every time an order is made for that item. A popular item is likely to be ordered by many users at one time, and so an update clash on stockLevel is highly likely. Product can attempt to resolve stockLevel update clashes by implementing handleUpdateClash:from:to:
+As an example we’ll return to the previous ==CustomerOrder== example, in particular the ==Product== class. The most volatile attribute of a ==Product== is likely to be its ==stockLevel== since this will change every time an order is made for that item. A popular item is likely to be ordered by many users at one time, and so an update clash on stockLevel is highly likely. Product can attempt to resolve stockLevel update clashes by implementing ==handleUpdateClash:from:to:==
 
+[[[
+handleUpdateClash: aSymbol from: oldVersion to: newVersion
 
+	| myStockChange mergedStockLevel |
+	(aSymbol = #numberInStock) ifFalse: [^false].
+	myStockChange := self stockLevel – oldVersion stockLevel.
+	mergedStockLevel := newVersion stockLevel + myStockChange.
+
+	^mergedStockLevel >= 0
+		ifTrue: [self stockLevel: newStockLevel. true]
+		ifFalse: [false] 
+]]]
+	
+Firstly, the method checks whether the clashing attribute (aSymbol) is actually ==stockLevel==; if not it makes no further attempt to handle the clash.
+
+Next, the relative change in stockLevel between version1 (==oldVersion==) and version 2 (==self==) is calculated. The method then applies this change of stock level to the stockLevel as currently stored in the database (==newVersion==), to give the new, merged, stock level.
+
+Finally the method checks that the merged stock level change is not negative - this would be invalid and so cannot be handled. Assuming this is not the case, however, the merged ==stockLevel== is applied to the receiver and true is returned to denote that the update clash has been handled successfully.
+
+By targeting implementations of ==handleUpdateClash:from:to:== at situations where update clashes are likely, you can improve the usability of your applications by ensuring that most transactions commit successfully on the first attempt.
 
 
 
