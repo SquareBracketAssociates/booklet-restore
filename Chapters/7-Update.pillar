@@ -1,1 +1,44 @@
 !! Update Clashes
+
+Where an application is the sole user of a database, transactions should always succeed. However where more than one user is interacting with the database there is the possibility for an update clash. Consider the following example:
+
+| Time | User A | User B | Database |
+| 00:00 | Begin editing Person 'John Smith' |	| 'John Smith' |
+| 00:01 | |Begin editing Person 'John Smith' | 'John Smith' |
+| 00:09 | Change ''surname'' to ""'Smythe'"" | | 'John Smith' |
+| 00:10 | |Change surname to 'Smithe' | 'John Smith' |
+| 00:14 | commitTransaction / store| | 'John ""Smythe""' |
+| 00:15 | |commitTransaction / store| ??? |
+
+What should happen when User B commits their change? If the change is allowed to succeed, then User A's changes will be overwritten.
+If it fails, then User B will potentially lose their changes -- is this acceptable?
+
+By default ReStore records a version number for each object in the database; each time the object is updated the version is incremented by 1.
+This allows ReStore to detect where another database user has changed an object, and thus to avoid overwriting another user’s changes from being overwritten.
+
+Where this happens, the originating ==commitTransaction== or ==store== message will fail - this chapter discusses how to handle this. 
+
+!!! Handling Transaction Failures
+When working with transactions the result of an update clash is that the transaction will fail to commit. To check for this, you should test the result of commitTransaction - this will return a Boolean to indicate whether the transaction succeeded (true) or failed (false). 
+
+Note that when a transaction fails to commit you have not lost the changes made during that failed transaction - the transaction is still active, the changed objects retain their changed state in memory and your changes still exist in the transaction. However none of the changes have been committed to the database - an update clash on one single object prevents the whole transaction from committing. 
+
+!!!! Rollback and Refresh
+The simplest action to take is to fail the whole transaction, rollback the changes made and update the clashing object(s) with the latest versions from the database. This is done as follows:
+
+[[[
+ReStore rollbackAndRefreshTransaction
+]]]
+
+Following ==rollbackAndRefreshTransaction==, you could (for example) issue a notification of the clash to the user (Another user has changed the data you were editing...), present them with the refreshed objects and ask them to repeat their actions. 
+
+!!!! Refresh and Rollforward
+An alternative approach is to merge the changes in the transaction with the changes in the database. This is done as follows:
+
+[[[
+ReStore refreshAndRollforwardTransaction 
+]]]
+
+With ==refreshAndRollforwardTransaction== the object(s) causing the update clash are refreshed with their latest versions from the database and the changes made in the transaction are re-applied onto the refreshed objects. Following a ==refreshAndRollforwardTransaction==, you will need to send ==commitTransaction== again, remembering that this second commit may also fail if any objects have been changed further since the refresh.
+
+Using ==refreshAndRollforwardTransaction== avoids the user having to repeat their changes, but you should bear in mind that this also allows the user to overwrite another user's changes without having first viewed them.

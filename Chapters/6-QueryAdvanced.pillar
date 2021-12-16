@@ -272,7 +272,7 @@ matchingCustomers includeAll: #(#customerOrders #address).
 
 An alternative scenario that can also be affected by the 1\+N problem is where you already have a real collection of objects in your image, but you want to fetch the contents of certain instance variables for all members of that collection.
 
-Let’s twist our current example of a “Find Customer” screen to demonstrate this. Let’s say that the initial list of customers only displays information directly held in the Customer object. Thus at this stage we have no need to user includeAll: to fetch additional objects – let’s remove this from our previous code:
+Let’s twist our current example of a “Find Customer” screen to demonstrate this. Let’s say that the initial list of customers only displays information directly held in the Customer object. Thus at this stage we have no need to user includeAll: to fetch additional objects - let’s remove this from our previous code:
 
 [[[
 template := Customer new.

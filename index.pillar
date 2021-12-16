@@ -11,7 +11,7 @@ ${inputFile:path=Chapters/3-StoringObjects.pillar}$
 
 
 ${inputFile:path=Chapters/4-Manually.pillar}$
-${inputFile:path=Chapters/5-QueryIntro.pillar}$
+${inputFile:path=Chapters/5-QueryOne.pillar}$
 ${inputFile:path=Chapters/6-QueryAdvanced.pillar}$
 
 ${inputFile:path=Chapters/7-Update.pillar}$
