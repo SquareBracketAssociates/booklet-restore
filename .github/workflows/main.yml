@@ -1,4 +1,4 @@
-name: Centralized book generation
+name: Pillar >10
 
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
@@ -13,6 +13,6 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build:
-    uses: SquareBracketAssociates/BookBuilderDashboard/.github/workflows/main.yml@master
+    uses: SquareBracketAssociates/BookBuilderDashboard/.github/workflows/main.yml@newVersionOfPillar
     with:
       bookname: Restore
